@@ -1,0 +1,50 @@
+services:
+
+  ollama:
+    container_name: ${NAMESPACE}_ollama
+    image: ollama/ollama:latest
+    pull_policy: always
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    tty: true
+    init: true
+    privileged: true
+    volumes:
+      - ~/.ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: ${OLLAMA_GPU_DRIVER-nvidia}
+              count: 1
+              capabilities:
+                - gpu
+
+  fabric:
+    build:
+       context: ./.docker/fabric
+       args:
+         GO_IMAGE_VERSION: ${GO_IMAGE_VERSION}
+    # pull_policy: always
+    container_name: ${NAMESPACE}_fabric
+    image: osioaliu/fabric:latest
+    user: root
+    ports:
+      - "8080:8080"
+    working_dir: /go/bin
+    volumes:
+      - ./.env:/root/.config/fabric/.env:ro
+      - ~/fabric:/go/bin/output
+    env_file:
+      - ./.env
+    command: >
+      /bin/bash -c "
+        source /root/.bashrc &&
+        tail -f /dev/null
+      "
+    depends_on:
+      - ollama
+    tty: true
