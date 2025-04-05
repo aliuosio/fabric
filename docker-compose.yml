@@ -36,7 +36,7 @@ services:
       - "8080:8080"
     working_dir: /go/bin
     volumes:
-      - ./.env:/root/.config/fabric/.env:ro
+      - ./.env:/root/.config/fabric/.env
       - ~/fabric:/go/bin/output
     env_file:
       - ./.env
