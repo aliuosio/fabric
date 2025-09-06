@@ -24,7 +24,7 @@ services:
                 - gpu
 
   fabric:
-    #build:
+    # build:
     #  context: ./.docker/fabric
     #  args:
     #    GO_IMAGE_VERSION: ${GO_IMAGE_VERSION}
@@ -48,3 +48,21 @@ services:
     depends_on:
       - ollama
     tty: true
+
+
+  searxng:
+    image: searxng/searxng:${SEARXNG_VERSION}
+    container_name: ${NAMESPACE}_searxng
+    pull_policy: always
+    volumes:
+      - ./.docker/searxng/settings.yml:/etc/searxng/settings.yml
+    env_file:
+      - .env
+    expose:
+      - 8080
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
