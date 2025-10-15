@@ -31,7 +31,6 @@ services:
     pull_policy: always
     container_name: ${NAMESPACE}_fabric
     image: osioaliu/fabric:latest
-    user: root
     ports:
       - "8080:8080"
     working_dir: /go/bin
