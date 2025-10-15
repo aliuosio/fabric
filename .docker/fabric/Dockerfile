@@ -6,6 +6,6 @@ RUN apk update && \
     
 RUN apk add bash npm
 
-RUN go install github.com/danielmiessler/fabric@latest
+RUN go install github.com/danielmiessler/fabric/cmd/fabric@latest
 
 COPY .bashrc /root/.bashrc
