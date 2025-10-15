@@ -31,23 +31,19 @@ services:
     pull_policy: always
     container_name: ${NAMESPACE}_fabric
     image: osioaliu/fabric:latest
+    env_file:
+      - .env
     ports:
-      - "8080:8080"
+      - "9090:8080"
     working_dir: /go/bin
     volumes:
       - ./.env:/root/.config/fabric/.env
       - ~/fabric:/go/bin/output
-    env_file:
-      - ./.env
     command: >
       /bin/bash -c "
         source /root/.bashrc &&
-        tail -f /dev/null
+        fabric --serve
       "
-    depends_on:
-      - ollama
-    tty: true
-
 
   searxng:
     image: searxng/searxng:${SEARXNG_VERSION}
