@@ -1,0 +1,2 @@
+# Run every day at 11 AM
+0 11 * * * /usr/local/bin/update-patterns.sh

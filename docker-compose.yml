@@ -4,7 +4,6 @@ services:
     container_name: ${NAMESPACE}_ollama
     image: ollama/ollama:latest
     pull_policy: always
-    restart: unless-stopped
     env_file:
       - ./.env
     extra_hosts:
@@ -22,15 +21,10 @@ services:
               count: 1
               capabilities:
                 - gpu
-
   fabric:
-    # build:
-    #  context: ./.docker/fabric
-    #  args:
-    #    GO_IMAGE_VERSION: ${GO_IMAGE_VERSION}
-    pull_policy: always
-    container_name: ${NAMESPACE}_fabric
     image: osioaliu/fabric:latest
+    container_name: ${NAMESPACE}_fabric
+    pull_policy: always
     env_file:
       - .env
     ports:
@@ -39,11 +33,6 @@ services:
     volumes:
       - ./.env:/root/.config/fabric/.env
       - ~/fabric:/go/bin/output
-    command: >
-      /bin/bash -c "
-        source /root/.bashrc &&
-        fabric --serve
-      "
 
   searxng:
     image: searxng/searxng:${SEARXNG_VERSION}
