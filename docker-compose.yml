@@ -1,33 +1,12 @@
 services:
-
-  ollama:
-    container_name: ${NAMESPACE}_ollama
-    image: ollama/ollama:latest
-    pull_policy: always
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-    env_file:
-      - ./.env
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    tty: true
-    init: true
-    privileged: true
-    volumes:
-      - ~/.ollama:/root/.ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: ${OLLAMA_GPU_DRIVER-nvidia}
-              count: 1
-              capabilities:
-                - gpu
+    
   fabric:
     image: osioaliu/fabric:latest
-    container_name: ${NAMESPACE}_fabric
+    build:
+      context: ./.docker/fabric
+      args:
+        GO_IMAGE_VERSION: ${GO_IMAGE_VERSION}
+    container_name: fabric
     pull_policy: always
     env_file:
       - .env
@@ -37,20 +16,3 @@ services:
     volumes:
       - ./.env:/root/.config/fabric/.env
       - ~/fabric:/go/bin/output
-
-  searxng:
-    image: searxng/searxng:${SEARXNG_VERSION}
-    container_name: ${NAMESPACE}_searxng
-    pull_policy: always
-    volumes:
-      - ./.docker/searxng/settings.yml:/etc/searxng/settings.yml
-    env_file:
-      - .env
-    expose:
-      - 8080
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/healthz"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 15s

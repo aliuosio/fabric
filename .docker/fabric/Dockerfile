@@ -35,7 +35,7 @@ FROM alpine:3.22
 # Install runtime dependencies
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache bash npm busybox-suid curl git ca-certificates && \
+    apk add --no-cache bash npm busybox-suid curl git ca-certificates yt-dlp ffmpeg  && \
     ln -sf /usr/sbin/crond /usr/bin/cron
 
 # Copy Fabric binary from builder stage
